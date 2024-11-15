@@ -1,0 +1,4 @@
+*.obj
+/config.py
+.cache
+compile_commands.json

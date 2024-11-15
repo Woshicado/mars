@@ -1,0 +1,100 @@
+import subprocess
+
+Import('env', 'sys', 'plugins')
+
+def version_action(target, source, env):
+    """
+    Generate the version file with the current version in it
+      """
+    try:
+        commit = subprocess.check_output(['git', 'describe', '--always']).decode().strip()
+        dirty = subprocess.check_output(['git', 'status', '--porcelain=v1', '-uall']).decode().strip()
+    except:
+        commit = 'unknown'
+        dirty = dirty_count = 'unknown'
+
+    if dirty == '':
+      dirty_count = 0
+    elif dirty != 'unknown':
+      dirty_count = len(dirty.split('\n'))
+
+    contents = source[0].get_contents().decode()
+    contents = contents.replace('@GIT_SHA1@', f"{commit} ({dirty_count} dirty)")
+    fd = open(target[0].path, 'w')
+    fd.write(contents)
+    fd.close()
+    return 0
+
+build_version = env.Command('path/GitSHA1.cpp', 'path/GitSHA1.cpp.in', Action(version_action))
+env.AlwaysBuild(build_version)
+
+oidnEnv = env.Clone()
+if 'OIDNLIB' in oidnEnv:
+    oidnEnv.Append(LIBS=oidnEnv['OIDNLIB'])
+if 'OIDNINCLUDE' in oidnEnv:
+    oidnEnv.Prepend(CPPPATH=oidnEnv['OIDNINCLUDE'])
+if 'OIDNLIBDIR' in oidnEnv:
+    oidnEnv.Prepend(LIBPATH=oidnEnv['OIDNLIBDIR'])
+    oidnEnv.Prepend(RPATH=oidnEnv['OIDNLIBDIR'])
+
+plugins += env.SharedLibrary('ao', ['direct/ao.cpp'])
+plugins += env.SharedLibrary('direct', ['direct/direct.cpp'])
+plugins += env.SharedLibrary('path', ['path/path.cpp'])
+plugins += env.SharedLibrary('volpath', ['path/volpath.cpp'])
+plugins += env.SharedLibrary('volpath_simple', ['path/volpath_simple.cpp'])
+plugins += env.SharedLibrary('ptracer', ['ptracer/ptracer.cpp', 'ptracer/ptracer_proc.cpp'])
+
+plugins += oidnEnv.SharedLibrary('guided_path', ['path/GitSHA1.cpp', 'path/guided_path.cpp'])
+plugins += oidnEnv.SharedLibrary('recursive_path', ['path/GitSHA1.cpp', 'path/recursive_path.cpp'])
+plugins += oidnEnv.SharedLibrary('sa_path', ['path/GitSHA1.cpp', 'path/sa_path.cpp'])
+
+# Photon mapping-based techniques
+plugins += env.SharedLibrary('photonmapper', ['photonmapper/photonmapper.cpp', 'photonmapper/bre.cpp'])
+plugins += env.SharedLibrary('ppm', ['photonmapper/ppm.cpp'])
+plugins += env.SharedLibrary('sppm', ['photonmapper/sppm.cpp'])
+
+# Miscellaneous
+plugins += env.SharedLibrary('vpl', ['vpl/vpl.cpp'])
+plugins += env.SharedLibrary('adaptive', ['misc/adaptive.cpp'])
+plugins += env.SharedLibrary('irrcache', ['misc/irrcache.cpp', 'misc/irrcache_proc.cpp'])
+plugins += env.SharedLibrary('multichannel', ['misc/multichannel.cpp'])
+plugins += env.SharedLibrary('field', ['misc/field.cpp'])
+plugins += env.SharedLibrary('motion', ['misc/motion.cpp'])
+
+# Bidirectional MARS = bmars
+bmarsEnv = oidnEnv.Clone()
+bmarsEnv.Append(LIBS=['mitsuba-bidir'])
+bmarsEnv.Append(LIBPATH=['#src/libbidir'])
+
+plugins += bmarsEnv.SharedLibrary('bmars',
+        ['path/GitSHA1.cpp', 'bmars/bmars.cpp', 'bmars/bmars_wr.cpp', 'bmars/bmars_proc.cpp', 'bmars/ears_structs.cpp'])
+
+# Efficiency Aware MIS
+effmisEnv = oidnEnv.Clone()
+effmisEnv.Append(LIBS=['mitsuba-bidir'])
+effmisEnv.Append(LIBPATH=['#src/libbidir'])
+
+plugins += effmisEnv.SharedLibrary('effmis',
+        ['path/GitSHA1.cpp', 'effmis/costs.cpp', 'effmis/effmis.cpp', 'effmis/effmis_wr.cpp', 'effmis/effmis_proc.cpp', 'effmis/optimizer.cpp'])
+
+# Bidirectional techniques
+bidirEnv = env.Clone()
+bidirEnv.Append(LIBS=['mitsuba-bidir'])
+bidirEnv.Append(LIBPATH=['#src/libbidir'])
+
+plugins += bidirEnv.SharedLibrary('bdpt',
+        ['bdpt/bdpt.cpp', 'bdpt/bdpt_wr.cpp', 'bdpt/bdpt_proc.cpp'])
+
+plugins += bidirEnv.SharedLibrary('pssmlt',
+        ['pssmlt/pssmlt.cpp', 'pssmlt/pssmlt_sampler.cpp',
+    'pssmlt/pssmlt_proc.cpp'])
+
+plugins += bidirEnv.SharedLibrary('mlt',
+        ['mlt/mlt.cpp', 'mlt/mlt_proc.cpp']
+)
+
+plugins += bidirEnv.SharedLibrary('erpt',
+        ['erpt/erpt.cpp', 'erpt/erpt_proc.cpp']
+)
+
+Export('plugins')

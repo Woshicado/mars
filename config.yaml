@@ -1,0 +1,614 @@
+---
+#------------------------------------------------------------#
+#--- Register your scenes here to use them with render.py ---#
+#------------------------------------------------------------#
+known-scenes:
+  - "cbox"
+
+
+#----------------------------------------#
+#--- Known rendering strategy presets ---#
+#----------------------------------------#
+strategies:
+#--- Bidirectional implementation configurations ---#
+  B-classicRR:   #* BDPT in the MARS implementation              [classic RR]
+    flags:
+      defaults:
+        oR: 10
+        rrDepth: 5
+        memLimit: 24
+      fixed:
+        disableLP: 'false'
+        integrator: bmars
+        rrsStrategy: bdptRR
+        sBSDF: 'false'
+        sLP: 'false'
+        sNEE: 'false'
+      unsupported:
+        - sMin
+        - sMax
+        - bAware
+        - sfExp
+        - rp
+        - shareSF
+        - shareLP
+  B-brute-force: #* 'brute-force' (efficiency-aware MIS variant) [brute-force]
+    flags:
+      defaults:
+        li: 'false'
+        nee: 'true'
+        pilotIterations: 1
+        connections: 1
+        lightPaths: -1
+        usePixelEstimate: 'true'
+        perPixelConnections: 'true'
+        useBidirPilot: 'true'
+        outlierFactor: 50
+      fixed:
+        rrDepth: 6
+        integrator: effmis
+      unsupported: null
+  B-EARS:        #* EARS (applied to BDPT)                       [EARS]
+    flags:
+      defaults:
+        oR: 10
+        sfExp: 1
+        sMin: 0.05
+        sMax: 20
+        memLimit: 24
+      fixed:
+        disableLP: 'false'
+        integrator: bmars
+        rp: 'false'
+        rrDepth: 1
+        rrsStrategy: BMARS
+        sBSDF: 'true'
+        sLP: 'true'
+        sNEE: 'true'
+        bAware: 'false'
+        shareLP: 'true'
+        shareSF: 'true'
+      unsupported: null
+  B-MARS-bu:     #* MARS (bidirectional budget-UNaware)          [Ours budget-unaware]
+    flags:
+      defaults:
+        oR: 10
+        sfExp: 1
+        sMin: 0.05
+        sMax: 20
+        memLimit: 24
+      fixed:
+        disableLP: 'false'
+        integrator: bmars
+        rp: 'false'
+        rrDepth: 1
+        rrsStrategy: BMARS
+        sBSDF: 'true'
+        sLP: 'true'
+        sNEE: 'true'
+        bAware: 'false'
+        shareLP: 'false'
+        shareSF: 'false'
+      unsupported: null
+  B-MARS:        #* MARS (bidirectional budget-aware)            [Ours]
+    flags:
+      defaults:
+        oR: 10
+        sfExp: 1
+        sMin: 0.05
+        sMax: 20
+        memLimit: 24
+      fixed:
+        disableLP: 'false'
+        integrator: bmars
+        rp: 'false'
+        rrDepth: 1
+        rrsStrategy: BMARS
+        sBSDF: 'true'
+        sLP: 'true'
+        sNEE: 'true'
+        bAware: 'true'
+        shareLP: 'false'
+        shareSF: 'false'
+      unsupported: null
+
+# Additional Ablations
+  B-EARS-1LP:    # EARS applied to BDPT and NEE with exactly 1 light path always
+    flags:
+      defaults:
+        oR: 10
+        sfExp: 1
+        sMin: 0.05
+        sMax: 20
+        memLimit: 24
+      fixed:
+        disableLP: 'false'
+        integrator: bmars
+        rp: 'false'
+        rrDepth: 1
+        rrsStrategy: BMARS
+        sBSDF: 'true'
+        sLP: 'false'
+        sNEE: 'true'
+        bAware: 'false'
+        shareLP: 'false'
+        shareSF: 'true'
+      unsupported: null
+  B-MARS-1LP-bu: # MARS (on BSDF/NEE; exactly 1 LP; bidirectional budget-UNaware)
+    flags:
+      defaults:
+        oR: 10
+        sfExp: 1
+        sMin: 0.05
+        sMax: 20
+        memLimit: 24
+      fixed:
+        disableLP: 'false'
+        integrator: bmars
+        rp: 'false'
+        rrDepth: 1
+        rrsStrategy: BMARS
+        sBSDF: 'true'
+        sLP: 'false'
+        sNEE: 'true'
+        bAware: 'false'
+        shareLP: 'false'
+        shareSF: 'false'
+      unsupported: null
+  B-MARS-1LP:    # MARS (on BSDF/NEE; exactly 1 LP; bidirectional budget-aware)
+    flags:
+      defaults:
+        oR: 10
+        sfExp: 1
+        sMin: 0.05
+        sMax: 20
+        memLimit: 24
+      fixed:
+        disableLP: 'false'
+        integrator: bmars
+        rp: 'false'
+        rrDepth: 1
+        rrsStrategy: BMARS
+        sBSDF: 'true'
+        sLP: 'false'
+        sNEE: 'true'
+        bAware: 'true'
+        shareLP: 'false'
+        shareSF: 'false'
+      unsupported: null
+  B-bdpt:        # BDPT (with classic throughput-based RR)
+    flags:
+      defaults:
+        li: 'false'
+      fixed:
+        integrator: bdpt
+      unsupported: null
+
+
+
+#--- Guiding implementation configurations ---#
+  G-classicRR: #* classic throughput-based path guiding                        [classic RR]
+    flags:
+      defaults:
+        budgetType: seconds
+        dumpSDTree: 'false'
+        nee: never
+        rBudget: 30
+        sMax: 20
+        sMin: 0.05
+        tBudget: 30
+        bsdfSamplingFractionLoss: ikl
+        trainIter: 9
+      fixed:
+        integrator: guided
+        rrsStrategy: classicRR
+      unsupported:
+        - splitConf
+  G-EARS:      #* EARS (on BSDF+guiding mixture and NEE) - image KL divergence [EARS]
+    flags:
+      defaults:
+        budgetType: seconds
+        dumpSDTree: 'false'
+        nee: never
+        rBudget: 30
+        sMax: 20
+        sMin: 0.05
+        tBudget: 30
+        bsdfSamplingFractionLoss: ikl
+        trainIter: 9
+      fixed:
+        integrator: guided
+        rrDepth: 1
+        rrsStrategy: MARS
+        splitConf: BN
+      unsupported: null
+  G-MARS-grad: #* MARS (on BSDF+guiding mixture and NEE budget-aware)          [Ours + Grad. Descent]
+    flags:
+      defaults:
+        budgetType: seconds
+        dumpSDTree: 'false'
+        nee: never
+        rBudget: 30
+        sMax: 20
+        sMin: 0.05
+        tBudget: 30
+        bsdfSamplingFractionLoss: ikl
+        trainIter: 9
+      fixed:
+        integrator: guided
+        rrDepth: 1
+        rrsStrategy: MARS
+        splitConf: BNSsf
+      unsupported: null
+  G-MARS-bu:   #* MARS (guiding budget-UNaware)                                [Ours budget-unaware]
+    flags:
+      defaults:
+        budgetType: seconds
+        dumpSDTree: 'false'
+        nee: never
+        rBudget: 30
+        sMax: 20
+        sMin: 0.05
+        tBudget: 30
+        trainIter: 9
+      fixed:
+        bsdfSamplingFractionLoss: none
+        integrator: guided
+        rrDepth: 1
+        rrsStrategy: MARS
+        splitConf: BNGS
+      unsupported: null
+  G-MARS:      #* MARS (guiding budget-aware)                                  [Ours]
+    flags:
+      defaults:
+        budgetType: seconds
+        dumpSDTree: 'false'
+        nee: never
+        rBudget: 30
+        sMax: 20
+        sMin: 0.05
+        tBudget: 30
+        trainIter: 9
+      fixed:
+        bsdfSamplingFractionLoss: none
+        integrator: guided
+        rrDepth: 1
+        rrsStrategy: MARS
+        splitConf: BNGSsf
+      unsupported: null
+
+# Additional Ablations
+  G-EARS-var:     # EARS (on BSDF+guiding mixture and NEE) - variance       [EARS variance]
+    flags:
+      defaults:
+        budgetType: seconds
+        dumpSDTree: 'false'
+        nee: never
+        rBudget: 30
+        sMax: 20
+        sMin: 0.05
+        tBudget: 30
+        trainIter: 9
+      fixed:
+        bsdfSamplingFractionLoss: var
+        integrator: guided
+        rrDepth: 1
+        rrsStrategy: MARS
+        splitConf: BN
+      unsupported: null
+  G-EARS-ivar:    # EARS (on BSDF+guiding mixture and NEE) - image variance [EARS image variance]
+    flags:
+      defaults:
+        budgetType: seconds
+        dumpSDTree: 'false'
+        nee: never
+        rBudget: 30
+        sMax: 20
+        sMin: 0.05
+        tBudget: 30
+        trainIter: 9
+      fixed:
+        bsdfSamplingFractionLoss: ivar
+        integrator: guided
+        rrDepth: 1
+        rrsStrategy: MARS
+        splitConf: BN
+      unsupported: null
+  G-EARS-kl:      # EARS (on BSDF+guiding mixture and NEE) - KL divergence  [EARS KL divergence]
+    flags:
+      defaults:
+        budgetType: seconds
+        dumpSDTree: 'false'
+        nee: never
+        rBudget: 30
+        sMax: 20
+        sMin: 0.05
+        tBudget: 30
+        trainIter: 9
+      fixed:
+        bsdfSamplingFractionLoss: kl
+        integrator: guided
+        rrDepth: 1
+        rrsStrategy: MARS
+        splitConf: BN
+      unsupported: null
+  G-MARS-grad-bu:  # MARS (on BSDF+guiding mixture and NEE budget-UNaware)
+    flags:
+      defaults:
+        budgetType: seconds
+        dumpSDTree: 'false'
+        nee: never
+        rBudget: 30
+        sMax: 20
+        sMin: 0.05
+        tBudget: 30
+        bsdfSamplingFractionLoss: ikl
+        trainIter: 9
+      fixed:
+        integrator: guided
+        rrDepth: 1
+        rrsStrategy: MARS
+        splitConf: BNS
+      unsupported: null
+  G-ADRRS:        #! path guiding with ADRRS [UNTESTED]
+    flags:
+      defaults:
+        budgetType: seconds
+        dumpSDTree: 'false'
+        nee: never
+        rBudget: 30
+        sMax: 20
+        sMin: 0.05
+        tBudget: 30
+        bsdfSamplingFractionLoss: ikl
+        trainIter: 9
+      fixed:
+        integrator: guided
+        rrDepth: 2
+        rrsStrategy: ADRRS
+      unsupported:
+        - splitConf
+
+
+
+#--- Unidirectional configurations ---#
+  EARS-in-MARS:  # classic unidirectional EARS in bidirectional MARS implementation
+    flags:
+      defaults:
+        oR: 10
+        sfExp: 1
+        sMin: 0.05
+        sMax: 20
+        memLimit: 24
+      fixed:
+        disableLP: 'true'
+        integrator: bmars
+        rp: 'false'
+        rrDepth: 1
+        rrsStrategy: BMARS
+        sBSDF: 'true'
+        sLP: 'false'
+        sNEE: 'true'
+        bAware: 'false'
+        shareLP: 'false'
+        shareSF: 'true'
+      unsupported: null
+  EARS:          # EARS (on original path tracing implementation)
+    flags:
+      defaults:
+        oR: 10
+        sMin: 0.05
+        sMax: 20
+      fixed:
+        integrator: ears
+        rrsStrategy: EARS
+      unsupported: null
+  ADRRS-in-EARS: # ADRRS in path tracing with the EARS implementation
+    flags:
+      defaults:
+        oR: 10
+      fixed:
+        integrator: ears
+        rrDepth: 2
+        rrsStrategy: ADRRS
+      unsupported: null
+  PT:            # Path tracing (with classic throughput-based RR)
+    flags:
+      defaults: null
+      fixed:
+        integrator: classic
+      unsupported: null
+  PT-in-MARS:    # Path tracing in the MARS implementation
+    flags:
+      defaults:
+        oR: 10
+        rrDepth: 5
+        memLimit: 24
+      fixed:
+        disableLP: 'true'
+        integrator: bmars
+        rrsStrategy: BMARS
+        sBSDF: 'false'
+        sLP: 'false'
+        sNEE: 'false'
+      unsupported:
+        - sMin
+        - sMax
+        - bAware
+        - sfExp
+        - rp
+        - shareSF
+        - shareLP
+
+
+
+#--- One sample MIS configurations ---#
+  sa-bruteforce:
+    flags:
+      defaults: null
+      fixed:
+        integrator: sa
+      unsupported:
+        - mullerPower
+        - bsdfFraction
+  sa-const:
+    flags:
+      defaults:
+        bsdfFraction: 0.5
+      fixed:
+        integrator: sa
+      unsupported:
+        - mullerPower
+  sa-meyer:
+    flags:
+      defaults: null
+      fixed:
+        integrator: sa
+      unsupported:
+        - mullerPower
+        - bsdfFraction
+  sa-muller:
+    flags:
+      defaults:
+        mullerPower: 1
+      fixed:
+        integrator: sa
+      unsupported:
+        - bsdfFraction
+  sa-sbert:
+    flags:
+      defaults: null
+      fixed:
+        integrator: sa
+      unsupported:
+        - mullerPower
+        - bsdfFraction
+  sa-szirmay:
+    flags:
+      defaults: null
+      fixed:
+        integrator: sa
+      unsupported:
+        - mullerPower
+        - bsdfFraction
+  sa-MARS:       # MARS in a one-sample MIS test. Projecting the allocated splits down to a ratio
+    flags:
+      defaults:
+        budgetType: seconds
+        dumpSDTree: 'false'
+        nee: never
+        rBudget: 30
+        sMax: 20
+        sMin: 0.05
+        tBudget: 30
+        trainIter: 9
+      fixed:
+        bsdfSamplingFractionLoss: none
+        integrator: guided
+        rrDepth: 1
+        rrsStrategy: EARS
+        splitConf: BNGSOS
+      unsupported: null
+
+
+
+#-------------------------------------------------------------------#
+#--- For render.py script to parse and sort everything correctly ---#
+#-------------------------------------------------------------------#
+general-flags:
+  - maxDepth
+  - rrDepth
+  - budget
+  - integrator
+
+integrator-flags:
+  bdpt:
+    - li
+  bmars:
+    - li
+    - rrsStrategy
+    - sBSDF
+    - sNEE
+    - sLP
+    - bAware
+    - sfExp
+    - rp
+    - oR
+    - shareSF
+    - shareLP
+    - disableLP
+    - sMin
+    - sMax
+    - memLimit
+    - save
+  classic: null
+  ears:
+    - rrsStrategy
+    - oR
+    - sMin
+    - sMax
+  effmis:
+    - li
+    - nee
+    - pilotIterations
+    - connections
+    - lightPaths
+    - usePixelEstimate
+    - perPixelConnections
+    - useBidirPilot
+    - outlierFactor
+  guided:
+    - rrsStrategy
+    - tBudget
+    - rBudget
+    - sMin
+    - sMax
+    - branch
+    - budgetType
+    - splitConf
+    - dumpSDTree
+    - bsdfSamplingFractionLoss
+    - nee
+    - trainIter
+  sa:
+    - bsdfFraction
+    - mullerPower
+
+sort-key:
+  - budget      # rendering budget in seconds (or spp for bdpt and classic integrators)
+  - rrDepth     # depth to start RRS at
+  - maxDepth    # maximum path depth
+  - integrator  # integrator file to use
+  - rrsStrategy # RRS strategy to apply for ears, b-mars, and guided integrator
+  - tBudget     # training budget in seconds for guided integrator
+  - rBudget     # rendering budget in seconds for guided integrator
+  - trainIter   # number of training iterations for guided integrator
+  - oR          # number of rejected pixels by the outlier rejection in EARS and bidir. MARS
+  - splitConf   # internally used config names to change the allocation computation. Refer to the code
+  - li          # activated direct camera - LP intersection connections in MARS/BDPT/effmis
+  - sBSDF       # sets whether to split BSDF samples or not
+  - sNEE        # sets whether to split NEE samples or not
+  - sLP         # sets whether to split NEE samples or not
+  - bAware      # sets whether to include sample allocations in MIS or not
+  - shareSF     # sets whether the techniques share the same budget allocations in bidir. MARS (as in EARS)
+  - shareLP     # sets whether to share the number of light paths as well (otherwise only BSDF+NEE shared)
+  - disableLP   # disable lightpaths completetly
+  - bsdfSamplingFractionLoss # sampling fraction optimizer for guided application
+  - sfExp       # exponent of the power heuristic in bidir. MARS
+  - rp          # enables/disables reusing the same light path in bidir. MARS (only possible if sLP=false)
+  - branch      # branching limit factor in the guided application (disabled by default)
+  - budgetType  # allows to change to a spp budget for the guided application
+  - dumpSDTree  # dump SDTree for inspection in the guided application
+  - sMin        # maximum sampling allocation per technique
+  - sMax        # minimum sampling allocation per technique
+  - memLimit    # memory limit per cache
+  - nee         # effmis and guided
+  - pilotIterations # effmis
+  - connections # effmis
+  - lightPaths  # effmis
+  - usePixelEstimate # effmis
+  - perPixelConnections # effmis
+  - useBidirPilot # effmis
+  - outlierFactor # effmis
+  - bsdfFraction
+  - mullerPower
