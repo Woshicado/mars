@@ -1,0 +1,60 @@
+<scene version="0.5.0">
+    <default name="tBudget" value="30" />
+    <default name="rBudget" value="30" />
+    <default name="trainIter" value="7" />
+    <default name="sMin" value="0.05" />
+    <default name="sMax" value="20" />
+    <default name="branch" value="1000" />
+    <default name="budgetType" value="seconds" /> <!-- spp, seconds -->
+    <default name="splitConf" value="BN" /> <!-- BN, BNS, BNSsf, BNGS, BNGSsf -->
+    <default name="dumpSDTree" value="false" />
+    <default name="bsdfSamplingFractionLoss" value="none" /> <!-- none, kl, variance -->
+
+    <!-- Possible: never, kickstart, always -->
+    <default name="nee" value="never" />
+
+    <!-- Possible: noRR, albedoRR, albedo2RR, classicRR, ADRR, AD2RR, EAR (+ combination of SCAJ) -->
+    <default name="rrsStrategy" value="classicRR" />
+
+    <integrator type="guided_path">
+        <boolean name="strictNormals" value="true" />
+
+        <!-- Parameters for the guided path tracer by Vorba et al. [2014] -->
+        <!--<integer name="maxDepth" value="40" />
+        <integer name="nImportons" value="300000" />
+        <integer name="nPhotons" value="300000" />
+        <integer name="passes" value="30" />
+        <boolean name="showVisualization" value="false" />
+        <boolean name="useEnvSampler" value="true" />-->
+
+        <!-- Parameters for our guided path tracer -->
+        <string name="budgetType" value="$budgetType" />
+        <float name="budget" value="$budget" />
+
+        <!--
+            The following parameters enable all improvements that were added
+            to this codebase after the publication of Mueller et al. [2017].
+            See README.md for additional information.
+        -->
+        <string  name="sampleCombination" value="automatic" /> <!-- discard, automatic, inversevar  -->
+        <string  name="bsdfSamplingFractionLoss" value="$bsdfSamplingFractionLoss" /> <!-- none, kl, variance -->
+        <string  name="spatialFilter" value="stochastic" /> <!-- nearest, stochastic, box -->
+        <string  name="directionalFilter" value="box" /> <!-- nearest, box -->
+        <integer name="sTreeThreshold" value="4000" />
+        <integer name="sppPerPass" value="1" />
+
+        <!-- MY ADDITIONS -->
+        <integer name="rrDepth" value="$rrDepth" />
+        <integer name="maxDepth" value="$maxDepth" />
+        <integer name="trainingIterations" value="$trainIter" />
+        <float   name="trainingBudget" value="$tBudget" />
+        <float   name="renderingBudget" value="$rBudget" />
+        <string  name="splitConfig" value="$splitConf" />
+        <!-- <float   name="branchingMax" value="$branch" /> -->
+        <float   name="splittingMin" value="$sMin" />
+        <float   name="splittingMax" value="$sMax" />
+        <string  name="nee" value="$nee" />
+        <string  name="rrs" value="$rrsStrategy" />
+        <boolean name="dumpSDTree" value="$dumpSDTree" />
+    </integrator>
+</scene>

@@ -52,8 +52,7 @@
 /.vscode
 
 *.exr
-scenes/**/*.png
-scenes
+_results
 
 # macOS
 .DS_Store

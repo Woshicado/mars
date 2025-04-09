@@ -1,0 +1,42 @@
+<scene version="0.5.0">
+	<default name="rrsStrategy" value="BMARS" />
+	<default name="li" value="false" />
+	<default name="sBSDF" value="true" />
+	<default name="sNEE" value="false" />
+	<default name="sLP" value="false" />
+	<default name="bAware" value="false" />
+	<default name="sfExp" value="1" />
+	<default name="rp" value="false" />
+	<default name="oR" value="10" />
+	<default name="shareSF" value="false" />
+	<default name="shareLP" value="false" />
+	<default name="disableLP" value="false" />
+	<default name="memLimit" value="24" />
+    <default name="sMax" value="20" />
+    <default name="sMin" value="0.05" />
+
+    <integrator type="bmars">
+        <string  name="rrsStrategy" value="$rrsStrategy" />
+        <float   name="budget" value="$budget" />
+        <boolean name="lightImage" value="$li" />
+        <boolean name="splitBSDF" value="$sBSDF" />
+        <boolean name="splitNEE" value="$sNEE" />
+        <boolean name="splitLP" value="$sLP" />
+        <boolean name="shareSF" value="$shareSF" />
+        <boolean name="shareLP" value="$shareLP" />
+        <boolean name="disableLP" value="$disableLP" />
+        <boolean name="budgetAware" value="$bAware" />
+        <float   name="sfExp" value="$sfExp" />
+        <integer name="outlierRejection" value="$oR" />
+        <boolean name="saveTrainFrames" value="$save" />
+        <integer name="rrDepth" value="$rrDepth" />
+        <integer name="maxDepth" value="$maxDepth" />
+        <boolean name="reusePaths" value="$rp" />
+        <boolean name="showWeighted" value="true" />
+        <boolean name="sampleDirect" value="true" />
+        <boolean name="strictNormals" value="true" />
+        <integer name="memLimit" value="$memLimit" />
+        <float   name="splittingMax" value="$sMax" />
+        <float   name="splittingMin" value="$sMin" />
+    </integrator>
+</scene>

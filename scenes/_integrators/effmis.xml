@@ -1,0 +1,36 @@
+<scene version="0.5.0">
+    <!-- Li and Nee should be enabled, else some yet unidentified bias might appear -->
+    <default name="li" value="false" />
+    <default name="nee" value="true" />
+    <!-- The paper uses a single PT iterations, following by a PTLTVC iteration if no PT was selected -->
+    <default name="pilotIterations" value="1" />
+    <default name="connections" value="1" />
+    <!-- A number < 0 will multiply the absolute value by the number of pixels in the image plane.
+        E.g., -2 -> 2 * numPixels
+    -->
+    <default name="lightPaths" value="-1" />
+    <!-- The paper never really goes into depths for this.
+    Enabling it might introduce some artifacts and requires further analysis
+    -->
+    <default name="perPixelConnections" value="false" />
+    <!-- Enables denoising and uses RelMSE for optimizing -->
+    <default name="usePixelEstimate" value="true" />
+    <default name="useBidirPilot" value="true" />
+    <default name="outlierFactor" value="50" />
+
+    <integrator type="effmis">
+        <float   name="budget" value="$budget" />
+        <boolean name="lightImage" value="$li" />
+        <integer name="rrDepth" value="$rrDepth" />
+        <integer name="maxDepth" value="$maxDepth" />
+        <boolean name="sampleDirect" value="$nee" />
+        <boolean name="strictNormals" value="true" />
+        <integer name="pilotIterations" value="$pilotIterations" />
+        <integer name="connections" value="$connections" />
+        <integer name="lightPaths" value="$lightPaths" />
+        <float   name="outlierFactor" value="$outlierFactor" />
+        <boolean name="perPixelConnections" value="$perPixelConnections" />
+        <boolean name="usePixelEstimate" value="$usePixelEstimate" />
+        <boolean name="useBidirPilot" value="$useBidirPilot" />
+    </integrator>
+</scene>

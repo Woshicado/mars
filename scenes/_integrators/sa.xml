@@ -1,0 +1,15 @@
+<scene version="0.5.0">
+    <default name="optimizer" value="constant" />
+    <default name="bsdfFraction" value="0.5" />
+    <default name="mullerPower"  value="1.0" />
+
+    <integrator type="sa_path">
+        <string name="optimizer" value="$optimizer" />
+        <float  name="bsdfFraction" value="$bsdfFraction" />
+        <float  name="mullerPower" value="$mullerPower" />
+        <integer name="maxDepth" value="$maxDepth" />
+        <integer name="rrDepth" value="$rrDepth" />
+        <boolean name="strictNormals" value="true" />
+        <boolean name="hideEmitter" value="false" />
+	</integrator>
+</scene>

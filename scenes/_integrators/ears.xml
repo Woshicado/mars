@@ -1,0 +1,18 @@
+<scene version="0.5.0">
+	<default name="rrsStrategy" value="EARS" />
+	<default name="oR" value="10" />
+    <default name="sMax" value="20" />
+    <default name="sMin" value="0.05" />
+
+	<integrator type="recursive_path">
+		<string  name="rrsStrategy" value="$rrsStrategy" />
+		<float   name="budget" value="$budget" />
+        <integer name="outlierRejection" value="$oR" />
+		<boolean name="saveTrainingFrames" value="$save" />
+		<integer name="rrDepth" value="$rrDepth" />
+		<integer name="maxDepth" value="$maxDepth" />
+		<boolean name="strictNormals" value="true" />
+        <float   name="splittingMax" value="$sMax" />
+        <float   name="splittingMin" value="$sMin" />
+	</integrator>
+</scene>

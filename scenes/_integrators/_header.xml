@@ -1,0 +1,10 @@
+<default name="save" value="false" /> <!-- Save train frames -->
+
+<default name="budget" value="300" /> <!-- Time to render in sec.-->
+<default name="spp" value="$budget" /> <!-- For sampling based renderers, number of spp -->
+
+<default name="rrDepth" value="1" /> <!-- Depth at which RR starts -->
+<default name="maxDepth" value="40" /> <!-- Depth to terminate rays definitely -->
+
+<default name="integrator" value="bmars"/> <!-- Integrator file to include and use -->
+<include filename="../_integrators/$integrator.xml"/> <!-- Default filename needs to be relative to scene.xml path -->

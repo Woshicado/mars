@@ -1,0 +1,12 @@
+<scene version="0.5.0">
+	<default name="li" value="true" />
+
+    <integrator type="bdpt">
+        <boolean name="lightImage" value="$li" />
+        <integer name="maxDepth" value="$maxDepth" />
+        <integer name="rrDepth" value="$rrDepth" />
+        <boolean name="sampleDirect" value="true" />
+        <boolean name="strictNormals" value="true" />
+        <boolean name="showWeighted" value="true" />
+    </integrator>
+</scene>

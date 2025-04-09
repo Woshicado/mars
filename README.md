@@ -108,21 +108,21 @@ The new code introduced by this project is licensed under the GNU General Public
 To cite us, you can use the following bibtex entry, citing the official Version of Record published at Siggraph Asia 2024.
 ```bibtex
 @inproceedings{meyerMARSMultisampleAllocation2024,
-  title      = {{{MARS}}: {{Multi-sample Allocation}} through {{Russian}} roulette and {{Splitting}}},
-  shorttitle = {{{MARS}}},
-  booktitle  = {{{SIGGRAPH Asia}} 2024 {{Conference Papers}}},
-  author     = {Meyer, Joshua and Rath, Alexander and Yazici, {\"O}mercan and Slusallek, Philipp},
+  author     = {Meyer, Joshua and Rath, Alexander and Yazici, \"{O}mercan and Slusallek, Philipp},
+  title      = {MARS: {{Multi-sample Allocation}} through {{Russian}} roulette and {{Splitting}}},
+  shorttitle = {MARS},
   year       = {2024},
-  month      = {nov},
-  series     = {{{SA}} '24},
-  pages      = {1--10},
+  month      = {dec},
+  isbn       = {9798400711312},
   publisher  = {Association for Computing Machinery},
-  address    = {Tokyo, Japan},
-  doi        = {10.1145/3680528.3687636},
+  address    = {New York, NY, USA},
   url        = {https://doi.org/10.1145/3680528.3687636},
-  isbn       = {979-8-4007-1131-2/24/12},
-  langid     = {english},
+  doi        = {10.1145/3680528.3687636},
+  booktitle  = {SIGGRAPH Asia 2024 Conference Papers},
+  articleno  = {20},
   numpages   = {10},
+  keywords   = {Russian roulette, splitting, multi-sample, multiple importance sampling},
+  series     = {SA '24}
 }
 ```
 
@@ -140,7 +140,7 @@ To cite us, you can use the following bibtex entry, citing the official Version 
 | —            | --maxDepth         | `int`       | Maximum path depth                                                                                   |
 | —            | --rrDepth          | `int`       | Depth at which RR and Splitting starts                                                               |
 | -o           | --outdir           | `str`       | Output directory                                                                                     |
-| —            | --train-fraction   | `d: int`    | **(GUIDING)** Use `budget/d` seconds for training                                                         |
+| —            | --train-fraction   | `d: int`    | **(GUIDING)** Use `budget/d` seconds for training                                                    |
 | —            | --train-budget     | `int`       | **(GUIDING)** Explicit train budget in seconds. Disables train-fraction if given                     |
 | —            | --train-iterations | `int`       | **(GUIDING)** Number of training iterations                                                          |
 | —            | --mis-exp          | `int`       | **(Bidir. MARS)** Exponent of the MIS power heuristic                                                |
